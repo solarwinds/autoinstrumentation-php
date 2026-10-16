@@ -1,0 +1,41 @@
+# Build args declared before the first FROM are usable in FROM instructions.
+ARG PHP_IMAGE=php:8.1@sha256:76e563191d1ade120313a8736df24154d21da5155c0756f147c0b01bd19d9087
+ARG OPENTELEMETRY_VERSION=1.4.2
+ARG APM_EXT_VERSION=2.0.0
+ARG PIE_VERSION=1.5.2
+ARG PIE_SHA256=fe70c59738cf56ec00a818cf9cb9593da171aac86f5f1f859995b8839dfd2cc7
+
+# Parameterized extension builder — driven by docker-bake.hcl.
+FROM ${PHP_IMAGE} AS builder
+ARG PHP_IMAGE
+ARG OPENTELEMETRY_VERSION
+ARG APM_EXT_VERSION
+ARG PIE_VERSION
+ARG PIE_SHA256
+ARG LIBC=glibc
+ARG THREAD=non-zts
+
+WORKDIR /build/${LIBC}/${THREAD}
+
+RUN if [ "${LIBC}" = "musl" ]; then \
+      apk add autoconf build-base libtool pkgconfig unzip; \
+    else \
+      apt-get update && apt-get install -y zlib1g-dev libzip-dev unzip && docker-php-ext-install zip; \
+    fi \
+    && curl -fsSL https://github.com/php/pie/releases/download/${PIE_VERSION}/pie.phar -o /usr/local/bin/pie \
+    && echo "${PIE_SHA256}  /usr/local/bin/pie" | sha256sum -c - \
+    && chmod +x /usr/local/bin/pie \
+    && pie install open-telemetry/ext-opentelemetry:${OPENTELEMETRY_VERSION} \
+    && cp /usr/local/lib/php/extensions/no-debug-${THREAD}-*/opentelemetry.so . \
+    && pie install solarwinds/apm_ext:${APM_EXT_VERSION} \
+    && cp /usr/local/lib/php/extensions/no-debug-${THREAD}-*/apm_ext.so .
+
+COPY --from=composer:2@sha256:af98f42dfff7c68ba8d53c2164fd9fde1087b7d449514baa38c418b1f6bc4bac /usr/bin/composer /usr/bin/composer
+COPY 8.1/composer.json /tmp/composer-8.1.json
+COPY 8.2_up/composer.json /tmp/composer-8.2-up.json
+RUN case "$PHP_IMAGE" in \
+      *8.1*) cp /tmp/composer-8.1.json composer.json ;; \
+      *)     cp /tmp/composer-8.2-up.json composer.json ;; \
+    esac
+RUN composer install --ignore-platform-req='ext-*'
+RUN mv vendor/* . && rm -rf vendor composer.json composer.lock /tmp/composer-8.1.json /tmp/composer-8.2-up.json
