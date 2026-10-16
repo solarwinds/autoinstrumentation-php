@@ -1,6 +1,6 @@
 {
   "name": "solarwinds/autoinstrumentation-php",
-  "description": "Solarwinds OpenTelemetry PHP auto-instrumentation packages to include in the image used by OpenTelemetry Operator for Kubernetes",
+  "description": "Solarwinds OpenTelemetry PHP auto-instrumentation packages (8.1) to include in the image used by OpenTelemetry Operator for Kubernetes",
   "type": "project",
   "require": {
     "open-telemetry/opentelemetry-auto-aws-sdk": "^0.4",

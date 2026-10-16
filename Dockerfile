@@ -7,6 +7,7 @@ ARG PIE_SHA256=fe70c59738cf56ec00a818cf9cb9593da171aac86f5f1f859995b8839dfd2cc7
 
 # Parameterized extension builder — driven by docker-bake.hcl.
 FROM ${PHP_IMAGE} AS builder
+ARG PHP_IMAGE
 ARG OPENTELEMETRY_VERSION
 ARG APM_EXT_VERSION
 ARG PIE_VERSION
@@ -30,6 +31,9 @@ RUN if [ "${LIBC}" = "musl" ]; then \
     && cp /usr/local/lib/php/extensions/no-debug-${THREAD}-*/apm_ext.so .
 
 COPY --from=composer:2@sha256:af98f42dfff7c68ba8d53c2164fd9fde1087b7d449514baa38c418b1f6bc4bac /usr/bin/composer /usr/bin/composer
-COPY composer.json .
+RUN case "$PHP_IMAGE" in \
+      *8.1*) COPY 8.1/composer.json . \
+      *)     COPY 8.2+/composer.json . \
+    esac
 RUN composer install --ignore-platform-req='ext-*'
 RUN mv vendor/* . && rm -rf vendor composer.json composer.lock
