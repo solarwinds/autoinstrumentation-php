@@ -52,4 +52,5 @@ jobs:
         env:
           IMAGE_NAME: "ghcr.io/${{ github.repository }}"
           TAG: ${{ steps.meta.outputs.tag || 'latest' }}
-          OPENTELEMETRY_VERSION: ${{ steps.meta.outputs.tag || '1.4.2' }}
+          OPENTELEMETRY_VERSION: '1.4.2'
+          APM_EXT_VERSION: '2.0.0'
