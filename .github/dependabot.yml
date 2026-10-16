@@ -2,7 +2,9 @@
 version: 2
 updates:
   - package-ecosystem: "composer"
-    directory: "/"
+    directories:
+      - "/8.1"
+      - "/8.2_up"
     schedule:
       interval: "daily"
 
