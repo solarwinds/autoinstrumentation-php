@@ -2,8 +2,8 @@
 ARG PHP_IMAGE=php:8.1@sha256:76e563191d1ade120313a8736df24154d21da5155c0756f147c0b01bd19d9087
 ARG OPENTELEMETRY_VERSION=1.4.2
 ARG APM_EXT_VERSION=2.0.0
-ARG PIE_VERSION=1.4.9
-ARG PIE_SHA256=19a31ddd4bfd08b9eb5eaad2e5f63e76e7919cae7683852da41c80da704ad6c0
+ARG PIE_VERSION=1.5.2
+ARG PIE_SHA256=fe70c59738cf56ec00a818cf9cb9593da171aac86f5f1f859995b8839dfd2cc7
 
 # Parameterized extension builder — driven by docker-bake.hcl.
 FROM ${PHP_IMAGE} AS builder
@@ -29,7 +29,7 @@ RUN if [ "${LIBC}" = "musl" ]; then \
     && pie install solarwinds/apm_ext:${APM_EXT_VERSION} \
     && cp /usr/local/lib/php/extensions/no-debug-${THREAD}-*/apm_ext.so .
 
-COPY --from=composer:2@sha256:4d71c3c2109c61d5415544264b59ad4087e4c5b7244481723664138fd36d5040 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2@sha256:af98f42dfff7c68ba8d53c2164fd9fde1087b7d449514baa38c418b1f6bc4bac /usr/bin/composer /usr/bin/composer
 COPY composer.json .
 RUN composer install --ignore-platform-req='ext-*'
 RUN mv vendor/* . && rm -rf vendor composer.json composer.lock
