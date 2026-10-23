@@ -54,3 +54,17 @@ jobs:
           TAG: ${{ steps.meta.outputs.tag || 'latest' }}
           OPENTELEMETRY_VERSION: '1.4.2'
           APM_EXT_VERSION: '2.0.0'
+
+      - name: Analyze for critical and high CVEs - tagged image
+        id: docker-scout-image-cves
+        uses: docker/scout-action@221e7f4860634eeb1579e3bd7ca232e577bd1864
+        with:
+          command: cves
+          image: "ghcr.io/${{ github.repository }}/autoinstrumentation-php:${{ steps.meta.outputs.tag || 'latest' }}"
+          platform: "linux/amd64"
+          sarif-file: sarif.output.json
+
+      - name: Upload SARIF result
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        with:
+          sarif_file: sarif.output.json
