@@ -2,7 +2,7 @@
 
 ## Security at SolarWinds
 
-SolarWinds is committed to taking our customers security and privacy concerns seriously and makes it a priority. We strive to implement and maintain security processes, procedures, standards, and take all reasonable care to prevent unauthorized access to our customer data. We apply appropriate administrative, operational, and technical security controls to help ensure that our customer data is handled and processed in a responsible and secure manner.
+SolarWinds is committed to taking our customers' security and privacy concerns seriously and makes it a priority. We strive to implement and maintain security processes, procedures, standards, and take all reasonable care to prevent unauthorized access to our customer data. We apply appropriate administrative, operational, and technical security controls to help ensure that our customer data is handled and processed in a responsible and secure manner.
 
 Our security strategy covers all aspects of our business, including:
 
