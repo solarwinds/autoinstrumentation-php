@@ -1,3 +1,6 @@
+# Copyright SolarWinds Worldwide, LLC.
+# SPDX-License-Identifier: Apache-2.0
+
 # docker-bake.hcl — drives all PHP extension builds + final image assembly.
 #
 # Build the final image:        docker buildx bake

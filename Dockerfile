@@ -1,3 +1,6 @@
+# Copyright SolarWinds Worldwide, LLC.
+# SPDX-License-Identifier: Apache-2.0
+
 # Build args declared before the first FROM are usable in FROM instructions.
 ARG PHP_IMAGE=php:8.1@sha256:76e563191d1ade120313a8736df24154d21da5155c0756f147c0b01bd19d9087
 ARG OPENTELEMETRY_VERSION=1.4.2
