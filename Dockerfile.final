@@ -1,3 +1,6 @@
+# Copyright SolarWinds Worldwide, LLC.
+# SPDX-License-Identifier: Apache-2.0
+
 FROM busybox@sha256:fd7dc98638c8e305f4dc34e979f1c0fdfdcaeb0fbf8fcff77ae834b6da3d7e6e
 
 # glibc (Debian) builds
