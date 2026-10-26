@@ -47,8 +47,8 @@ jobs:
 
       - name: Build and push
         uses: docker/bake-action@59cb1203cd42bcefd40a1b6d73b589e48c86040e # v7.5.0
-#        with:
-#          push: ${{ github.event_name != 'pull_request' }}
+        with:
+          push: true # ${{ github.event_name != 'pull_request' }}
         env:
           IMAGE_NAME: "ghcr.io/${{ github.repository }}"
           TAG: ${{ steps.meta.outputs.tag || 'latest' }}
