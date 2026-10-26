@@ -64,13 +64,20 @@ variable "PHP_85_MUSL_NON_ZTS" { default = "php:8.5-alpine@sha256:93684051146ec0
 variable "PHP_85_MUSL_ZTS"     { default = "php:8.5-zts-alpine@sha256:1c45229fd82d57ae54104a0930fb58c635bbfe81dc156971eeaf7993bc59db32" }
 
 # ---------------------------------------------------------------------------
+# Shared platform configuration — keep build and final targets aligned.
+# ---------------------------------------------------------------------------
+target "_platform-base" {
+  platforms = ["linux/amd64","linux/arm64","linux/s390x","linux/ppc64le"]
+}
+
+# ---------------------------------------------------------------------------
 # Shared base target — all build targets inherit from this.
 # ---------------------------------------------------------------------------
 target "_build-base" {
+  inherits   = ["_platform-base"]
   dockerfile = "Dockerfile"
   target     = "builder"
   context    = "."
-  platforms  = ["linux/amd64", "linux/arm64", "linux/s390x", "linux/ppc64le"]
   args       = { OPENTELEMETRY_VERSION = OPENTELEMETRY_VERSION, APM_EXT_VERSION = APM_EXT_VERSION }
   output     = []
 }
@@ -173,9 +180,9 @@ target "build-zts-musl-85" {
 # Final image — assembles all build artifacts into a single busybox image.
 # ---------------------------------------------------------------------------
 target "final" {
+  inherits   = ["_platform-base"]
   dockerfile = "Dockerfile.final"
   context    = "."
-  platforms  = ["linux/amd64","linux/arm64","linux/s390x","linux/ppc64le"]
   tags       = ["${IMAGE_NAME}:${TAG}"]
   contexts = {
     build-non-zts-81      = "target:build-non-zts-81"
