@@ -13,7 +13,7 @@ on:
 
 jobs:
   build-variants:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -76,7 +76,7 @@ jobs:
 
   assemble:
     needs: build-variants
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -92,6 +92,25 @@ jobs:
         with:
           pattern: build-*
           path: artifacts
+
+      - name: Restructure OCI Layout Paths
+        run: |
+          mkdir -p artifacts
+          echo "==== OCI ===="
+
+          find temp-artifacts -name "index.json" | while read -r index_path; do
+            oci_dir=$(dirname "$index_path")
+
+            variant_name=$(echo "$oci_dir" | grep -o -E 'build-[a-zA-Z0-9_-]+')
+
+            echo "Found: $variant_name, save to artifacts/$variant_name"
+
+            mkdir -p "artifacts/$variant_name"
+            cp -r "$oci_dir"/* "artifacts/$variant_name/"
+          done
+
+          echo "==== Check final directory structure ===="
+          ls -R artifacts
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
