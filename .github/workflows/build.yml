@@ -93,6 +93,41 @@ jobs:
           pattern: build-*
           path: artifacts
 
+      - name: Normalize and verify OCI artifact layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob dotglob
+
+          echo "== Artifact tree (before normalization) =="
+          if [[ -d artifacts ]]; then
+            find artifacts -maxdepth 3 -mindepth 1 -print | sort
+          fi
+
+          dirs=(artifacts/build-*/)
+          if (( ${#dirs[@]} == 0 )); then
+            echo "::error::No build-* artifact directories found in ./artifacts"
+            exit 1
+          fi
+
+          for d in "${dirs[@]}"; do
+            d="${d%/}"
+            name="${d##*/}"
+            if [[ ! -f "$d/index.json" && -f "$d/$name/index.json" ]]; then
+              echo "Flattening nested OCI layout for $name"
+              mv "$d/$name/"* "$d/"
+              rmdir "$d/$name"
+            fi
+
+            if [[ ! -f "$d/index.json" ]]; then
+              echo "::error::Invalid OCI layout for $name (missing $d/index.json)"
+              exit 1
+            fi
+          done
+
+          echo "== Artifact tree (after normalization) =="
+          find artifacts -maxdepth 3 -mindepth 1 -print | sort
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
 
