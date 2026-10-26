@@ -39,15 +39,17 @@ git tag 1.0.0
 git push origin 1.0.0
 ```
 
-GitHub Actions builds each PHP variant in a separate matrix runner, pushes the
-intermediate artifacts to the `-build` GHCR package, then assembles and pushes
-the final image after all variants succeed.
+GitHub Actions builds each PHP variant in a separate matrix runner and uploads
+the `/build` output as an OCI layout using Actions artifacts, retained for one
+day. The assembly job downloads these layouts and selects the matching
+architecture automatically, preserving file permissions. Only the final image
+is pushed to GHCR after all variants succeed.
 
 ## Files
 
 - `Dockerfile` builds each PHP/platform variant
 - `Dockerfile.final` assembles the release image
 - `docker-bake.hcl` defines the matrix and image tags
-- `docker-bake.ci.hcl` configures CI artifact images and final assembly
+- `docker-bake.ci.hcl` configures CI artifact exports and local OCI layout assembly
 - `.github/workflows/build.yml` runs CI builds and pushes
 - `.github/dependabot.yml` keeps dependencies updated
