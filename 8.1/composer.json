@@ -10,7 +10,7 @@
     "open-telemetry/opentelemetry-auto-mongodb": "^0.4",
     "open-telemetry/opentelemetry-auto-openai-php": "^0.3",
     "open-telemetry/opentelemetry-auto-psr3": "^0.3",
-    "open-telemetry/opentelemetry-auto-psr6": "^0.0.7",
+    "open-telemetry/opentelemetry-auto-psr6": "^0.0.8",
     "open-telemetry/opentelemetry-auto-psr14": "^0.0.8",
     "open-telemetry/opentelemetry-auto-psr15": "^1.2",
     "open-telemetry/opentelemetry-auto-psr16": "^0.0.7",
