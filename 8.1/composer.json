@@ -13,7 +13,7 @@
     "open-telemetry/opentelemetry-auto-psr6": "^0.0.8",
     "open-telemetry/opentelemetry-auto-psr14": "^0.0.8",
     "open-telemetry/opentelemetry-auto-psr15": "^1.2",
-    "open-telemetry/opentelemetry-auto-psr16": "^0.0.7",
+    "open-telemetry/opentelemetry-auto-psr16": "^0.0.8",
     "open-telemetry/opentelemetry-auto-psr18": "^1.2",
     "open-telemetry/opentelemetry-auto-reactphp": "^0.5",
     "open-telemetry/opentelemetry-auto-slim": "^1.4",
