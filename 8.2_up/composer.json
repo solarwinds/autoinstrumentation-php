@@ -10,7 +10,7 @@
     "open-telemetry/opentelemetry-auto-io": "^0.3",
     "open-telemetry/opentelemetry-auto-laravel": "^1.7",
     "open-telemetry/opentelemetry-auto-mongodb": "^0.4",
-    "open-telemetry/opentelemetry-auto-mysqli": "^0.4",
+    "open-telemetry/opentelemetry-auto-mysqli": "^0.5",
     "open-telemetry/opentelemetry-auto-openai-php": "^0.3",
     "open-telemetry/opentelemetry-auto-pdo": "^0.6",
     "open-telemetry/opentelemetry-auto-postgresql": "^0.4",
