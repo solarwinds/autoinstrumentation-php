@@ -12,32 +12,37 @@ on:
       - main
 
 jobs:
+  prepare-matrix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - name: Generate variant matrix
+        id: matrix
+        shell: bash
+        run: |
+          matrix=$(docker buildx bake -f docker-bake.hcl final --print | jq -ce '
+            {target: [.target | keys[] | select(startswith("build-"))]}
+            | if (.target | length) == 0 then error("No build variant targets found") else . end
+          ')
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+
   build-variants:
+    needs: prepare-matrix
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        target:
-          - build-non-zts-81
-          - build-zts-81
-          - build-non-zts-musl-81
-          - build-zts-musl-81
-          - build-non-zts-82
-          - build-zts-82
-          - build-non-zts-musl-82
-          - build-zts-musl-82
-          - build-non-zts-83
-          - build-zts-83
-          - build-non-zts-musl-83
-          - build-zts-musl-83
-          - build-non-zts-84
-          - build-zts-84
-          - build-non-zts-musl-84
-          - build-zts-musl-84
-          - build-non-zts-85
-          - build-zts-85
-          - build-non-zts-musl-85
-          - build-zts-musl-85
+      matrix: ${{ fromJSON(needs.prepare-matrix.outputs.matrix) }}
     permissions:
       contents: read
 
@@ -93,25 +98,6 @@ jobs:
           pattern: build-*
           path: artifacts
 
-      - name: Restructure OCI Layout Paths
-        run: |
-          mkdir -p artifacts
-          echo "==== OCI ===="
-
-          find temp-artifacts -name "index.json" | while read -r index_path; do
-            oci_dir=$(dirname "$index_path")
-
-            variant_name=$(echo "$oci_dir" | grep -o -E 'build-[a-zA-Z0-9_-]+')
-
-            echo "Found: $variant_name, save to artifacts/$variant_name"
-
-            mkdir -p "artifacts/$variant_name"
-            cp -r "$oci_dir"/* "artifacts/$variant_name/"
-          done
-
-          echo "==== Check final directory structure ===="
-          ls -R artifacts
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
 
@@ -135,6 +121,7 @@ jobs:
       - name: Assemble and push final image
         uses: docker/bake-action@59cb1203cd42bcefd40a1b6d73b589e48c86040e # v7.5.0
         with:
+          source: .
           files: |
             docker-bake.hcl
             docker-bake.ci.hcl
