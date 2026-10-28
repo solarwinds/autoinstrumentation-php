@@ -17,7 +17,7 @@
     "open-telemetry/opentelemetry-auto-psr18": "^1.2",
     "open-telemetry/opentelemetry-auto-reactphp": "^0.5",
     "open-telemetry/opentelemetry-auto-slim": "^1.4",
-    "open-telemetry/opentelemetry-metrics-runtime": "^0.2",
+    "open-telemetry/opentelemetry-metrics-runtime": "^0.3",
     "solarwinds/apm": "^9.0@alpha",
     "php-http/guzzle7-adapter": "^1.0",
     "nyholm/psr7-server": "^1.1"
