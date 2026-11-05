@@ -129,6 +129,7 @@ jobs:
             docker-bake.ci.hcl
           targets: final-ci
           push: ${{ github.event_name != 'pull_request' }}
+          load: true
         env:
           IMAGE_NAME: "ghcr.io/${{ github.repository }}"
           TAG: ${{ steps.meta.outputs.tag || 'latest' }}
@@ -146,7 +147,7 @@ jobs:
         uses: docker/scout-action@221e7f4860634eeb1579e3bd7ca232e577bd1864
         with:
           command: cves
-          image: "ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.tag || 'latest' }}"
+          image: "local://${{ github.repository }}:${{ steps.meta.outputs.tag || 'latest' }}"
           platform: "linux/amd64"
           sarif-file: sarif.output.json
 
