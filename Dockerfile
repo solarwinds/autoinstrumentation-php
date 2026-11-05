@@ -42,3 +42,6 @@ RUN case "$PHP_IMAGE" in \
     esac
 RUN composer install --ignore-platform-req='ext-*'
 RUN mv vendor/* . && rm -rf vendor composer.json composer.lock /tmp/composer-8.1.json /tmp/composer-8.2-up.json
+
+FROM scratch AS artifact
+COPY --from=builder /build /build
