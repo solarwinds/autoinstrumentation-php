@@ -86,7 +86,7 @@ runs:
           JQL_VALUE=$(jq -rn --arg value "$SUMMARY" '$value | gsub("\\\\"; "\\\\\\\\") | gsub("\""; "\\\\\"")')
           JQL="project = NH AND summary ~ \"\\\"${JQL_VALUE}\\\"\""
           JIRA_SEARCH_RESPONSE=$(curl -sS --http1.1 -w "\n%{http_code}" --connect-timeout 30 --max-time 90 \
-            --get "${JIRA_BASE_URL}/rest/api/3/search" \
+            --get "${JIRA_BASE_URL}/rest/api/3/search/jql" \
             -u "${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}" \
             -H "Accept: application/json" \
             --data-urlencode "jql=${JQL}" \
