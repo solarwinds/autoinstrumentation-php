@@ -153,3 +153,14 @@ jobs:
         uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
         with:
           sarif_file: sarif.output.json
+
+      - name: Create JIRA tickets for vulnerabilities
+        uses: ./.github/actions/jira_vuln_k8s
+        with:
+          image-tag: "ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.tag || 'latest' }}"
+          workflow-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          commit-sha: ${{ github.sha }}
+          jira-base-url: ${{ secrets.JIRA_BASE_URL }}
+          jira-user-email: ${{ secrets.JIRA_USER_EMAIL }}
+          jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+          jira-team-field-id: ${{ secrets.JIRA_TEAM_FIELD_ID }}
