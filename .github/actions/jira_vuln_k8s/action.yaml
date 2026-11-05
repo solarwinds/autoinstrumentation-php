@@ -80,6 +80,32 @@ runs:
           SEVERITY_TEXT=$([ "$SEVERITY" = "error" ] && echo "Critical" || echo "High")
           REPORT_DATE=$(date +%Y-%m-%d)
           VULN_COMPONENT="${PACKAGE}-${VERSION}"
+          SUMMARY="${CVE}: PHP - ${PACKAGE}"
+
+          # Look up the vulnerability before creating a ticket to avoid duplicates on reruns.
+          JQL_VALUE=$(jq -rn --arg value "$SUMMARY" '$value | gsub("\\\\"; "\\\\\\\\") | gsub("\""; "\\\\\"")')
+          JQL="project = NH AND summary ~ \"\\\"${JQL_VALUE}\\\"\""
+          JIRA_SEARCH_RESPONSE=$(curl -sS --http1.1 -w "\n%{http_code}" --connect-timeout 30 --max-time 90 \
+            --get "${JIRA_BASE_URL}/rest/api/3/search" \
+            -u "${JIRA_USER_EMAIL}:${JIRA_API_TOKEN}" \
+            -H "Accept: application/json" \
+            --data-urlencode "jql=${JQL}" \
+            --data-urlencode "fields=key" \
+            --data-urlencode "maxResults=1")
+
+          SEARCH_HTTP_CODE=$(echo "$JIRA_SEARCH_RESPONSE" | tail -n1)
+          SEARCH_RESPONSE_BODY=$(echo "$JIRA_SEARCH_RESPONSE" | sed '$d')
+          if [[ ! "$SEARCH_HTTP_CODE" =~ ^2[0-9][0-9]$ ]] || ! echo "$SEARCH_RESPONSE_BODY" | jq -e '(.issues | type) == "array"' > /dev/null; then
+            echo "❌ ${CVE}: Jira vulnerability lookup failed (HTTP ${SEARCH_HTTP_CODE})"
+            ((ERROR_COUNT++))
+            continue
+          fi
+
+          EXISTING_TICKET=$(echo "$SEARCH_RESPONSE_BODY" | jq -r '.issues[0].key // empty')
+          if [ -n "$EXISTING_TICKET" ]; then
+            echo "ℹ️ ${CVE}: Existing Jira ticket ${EXISTING_TICKET}"
+            continue
+          fi
 
           # Build request from template
           JIRA_REQUEST=$(jq \
@@ -91,7 +117,7 @@ runs:
             --arg msg "$MESSAGE" \
             --arg url "$WORKFLOW_URL" \
             --arg commit "$COMMIT_SHA" \
-            --arg summary "${CVE}: PHP - ${PACKAGE}" \
+            --arg summary "$SUMMARY" \
             --arg teamId "$TEAM_ID" \
             --arg reportDate "$REPORT_DATE" \
             --arg vulnComponent "$VULN_COMPONENT" \
