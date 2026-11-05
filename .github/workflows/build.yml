@@ -55,6 +55,12 @@ jobs:
           OPENTELEMETRY_VERSION: '1.4.2'
           APM_EXT_VERSION: '2.0.0'
 
+      - name: Log into Docker.io (scan)
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          username: ${{ vars.ENOPS5919_DOCKER_SCOUT_CI_USER }}
+          password: ${{ secrets.ENOPS5919_DOCKER_SCOUT_CI_PAT }}
+
       - name: Analyze for critical and high CVEs - tagged image
         id: docker-scout-image-cves
         uses: docker/scout-action@221e7f4860634eeb1579e3bd7ca232e577bd1864
