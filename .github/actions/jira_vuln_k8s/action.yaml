@@ -91,7 +91,7 @@ runs:
             --arg msg "$MESSAGE" \
             --arg url "$WORKFLOW_URL" \
             --arg commit "$COMMIT_SHA" \
-            --arg summary "${CVE}: Python - ${PACKAGE}" \
+            --arg summary "${CVE}: PHP - ${PACKAGE}" \
             --arg teamId "$TEAM_ID" \
             --arg reportDate "$REPORT_DATE" \
             --arg vulnComponent "$VULN_COMPONENT" \
