@@ -85,6 +85,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+      pull-requests: write
+      security-events: write
 
     steps:
       - name: Checkout
@@ -127,8 +129,40 @@ jobs:
             docker-bake.ci.hcl
           targets: final-ci
           push: ${{ github.event_name != 'pull_request' }}
+          load: true
         env:
           IMAGE_NAME: "ghcr.io/${{ github.repository }}"
           TAG: ${{ steps.meta.outputs.tag || 'latest' }}
           OPENTELEMETRY_VERSION: '1.4.2'
           APM_EXT_VERSION: '2.0.0'
+
+      - name: Log into Docker.io (scan)
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          username: ${{ vars.ENOPS5919_DOCKER_SCOUT_CI_USER }}
+          password: ${{ secrets.ENOPS5919_DOCKER_SCOUT_CI_PAT }}
+
+      - name: Analyze for critical and high CVEs - tagged image
+        id: docker-scout-image-cves
+        uses: docker/scout-action@221e7f4860634eeb1579e3bd7ca232e577bd1864
+        with:
+          command: cves
+          image: "local://ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.tag || 'latest' }}"
+          platform: "linux/amd64"
+          sarif-file: sarif.output.json
+
+      - name: Upload SARIF result
+        uses: github/codeql-action/upload-sarif@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee
+        with:
+          sarif_file: sarif.output.json
+
+      - name: Create JIRA tickets for vulnerabilities
+        uses: ./.github/actions/jira_vuln_k8s
+        with:
+          image-tag: "ghcr.io/${{ github.repository }}:${{ steps.meta.outputs.tag || 'latest' }}"
+          workflow-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          commit-sha: ${{ github.sha }}
+          jira-base-url: ${{ secrets.JIRA_BASE_URL }}
+          jira-user-email: ${{ secrets.JIRA_USER_EMAIL }}
+          jira-api-token: ${{ secrets.JIRA_API_TOKEN }}
+          jira-team-field-id: ${{ secrets.JIRA_TEAM_FIELD_ID }}
