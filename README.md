@@ -4,7 +4,7 @@ Builds the Solarwinds OpenTelemetry PHP autoinstrumentation image published to G
 
 ## What it builds
 
-- PHP 8.1, 8.2, 8.3, 8.4, and 8.5
+- PHP 8.2, 8.3, 8.4, and 8.5
 - glibc and musl variants
 - ZTS and non-ZTS variants
 
@@ -22,7 +22,7 @@ docker buildx bake --push
 
 Build extension artifacts for a single variant (intermediate build target; does not build/tag the final image):
 
-    docker buildx bake build-non-zts-81
+    docker buildx bake build-non-zts-82
 
 Override the release version and tag:
 

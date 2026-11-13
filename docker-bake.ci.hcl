@@ -5,10 +5,6 @@ target "_build-base" {
 target "final-ci" {
   inherits = ["final"]
   contexts = {
-    build-non-zts-81      = "oci-layout://./artifacts/build-non-zts-81"
-    build-zts-81          = "oci-layout://./artifacts/build-zts-81"
-    build-non-zts-musl-81 = "oci-layout://./artifacts/build-non-zts-musl-81"
-    build-zts-musl-81     = "oci-layout://./artifacts/build-zts-musl-81"
     build-non-zts-82      = "oci-layout://./artifacts/build-non-zts-82"
     build-zts-82          = "oci-layout://./artifacts/build-zts-82"
     build-non-zts-musl-82 = "oci-layout://./artifacts/build-non-zts-musl-82"
