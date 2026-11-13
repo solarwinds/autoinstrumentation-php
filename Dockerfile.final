@@ -4,8 +4,6 @@
 FROM busybox@sha256:fd7dc98638c8e305f4dc34e979f1c0fdfdcaeb0fbf8fcff77ae834b6da3d7e6e
 
 # glibc (Debian) builds
-COPY --from=build-non-zts-81    /build /autoinstrumentation/20210902
-COPY --from=build-zts-81        /build /autoinstrumentation/20210902
 COPY --from=build-non-zts-82    /build /autoinstrumentation/20220829
 COPY --from=build-zts-82        /build /autoinstrumentation/20220829
 COPY --from=build-non-zts-83    /build /autoinstrumentation/20230831
@@ -16,8 +14,6 @@ COPY --from=build-non-zts-85    /build /autoinstrumentation/20250925
 COPY --from=build-zts-85        /build /autoinstrumentation/20250925
 
 # musl (Alpine) builds
-COPY --from=build-non-zts-musl-81   /build /autoinstrumentation/20210902
-COPY --from=build-zts-musl-81       /build /autoinstrumentation/20210902
 COPY --from=build-non-zts-musl-82   /build /autoinstrumentation/20220829
 COPY --from=build-zts-musl-82       /build /autoinstrumentation/20220829
 COPY --from=build-non-zts-musl-83   /build /autoinstrumentation/20230831

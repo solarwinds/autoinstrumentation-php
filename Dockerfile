@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Build args declared before the first FROM are usable in FROM instructions.
-ARG PHP_IMAGE=php:8.1@sha256:76e563191d1ade120313a8736df24154d21da5155c0756f147c0b01bd19d9087
-ARG OPENTELEMETRY_VERSION=1.4.2
-ARG APM_EXT_VERSION=2.0.0
+ARG PHP_IMAGE=php:8.2@sha256:118ef4fb1db5e866fb604f2f260da81f819a0a1eac87a4083f9194f48e00beee
+ARG OPENTELEMETRY_VERSION=1.5.0
+ARG APM_EXT_VERSION=3.0.0
 ARG PIE_VERSION=1.5.2
 ARG PIE_SHA256=fe70c59738cf56ec00a818cf9cb9593da171aac86f5f1f859995b8839dfd2cc7
 
@@ -34,14 +34,9 @@ RUN if [ "${LIBC}" = "musl" ]; then \
     && cp /usr/local/lib/php/extensions/no-debug-${THREAD}-*/apm_ext.so .
 
 COPY --from=composer:2@sha256:af98f42dfff7c68ba8d53c2164fd9fde1087b7d449514baa38c418b1f6bc4bac /usr/bin/composer /usr/bin/composer
-COPY 8.1/composer.json /tmp/composer-8.1.json
-COPY 8.2_up/composer.json /tmp/composer-8.2-up.json
-RUN case "$PHP_IMAGE" in \
-      *8.1*) cp /tmp/composer-8.1.json composer.json ;; \
-      *)     cp /tmp/composer-8.2-up.json composer.json ;; \
-    esac
+COPY composer.json composer.json
 RUN composer install --ignore-platform-req='ext-*'
-RUN mv vendor/* . && rm -rf vendor composer.json composer.lock /tmp/composer-8.1.json /tmp/composer-8.2-up.json
+RUN mv vendor/* . && rm -rf vendor composer.json composer.lock
 
 FROM scratch AS artifact
 COPY --from=builder /build /build
