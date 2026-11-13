@@ -9,13 +9,13 @@
 # Override opentelemetry version or tag:      OPENTELEMETRY_VERSION=1.4.2 TAG=1.4.2 docker buildx bake
 
 variable "OPENTELEMETRY_VERSION" {
-  # Override at build time: OPENTELEMETRY_VERSION=1.4.2 docker buildx bake
-  default = "1.4.2"
+  # Override at build time: OPENTELEMETRY_VERSION=<version> docker buildx bake
+  default = "1.5.0"
 }
 
 variable "APM_EXT_VERSION" {
-  # Override at build time: APM_EXT_VERSION=2.0.0 docker buildx bake
-  default = "2.0.0"
+  # Override at build time: APM_EXT_VERSION=<version> docker buildx bake
+  default = "3.0.0"
 }
 
 

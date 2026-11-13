@@ -27,7 +27,7 @@ Build extension artifacts for a single variant (intermediate build target; does 
 Override the release version and tag:
 
 ```bash
-APM_EXT_VERSION=2.0.0 OPENTELEMETRY_VERSION=1.4.2 TAG=1.4.2 docker buildx bake 
+APM_EXT_VERSION=<version> OPENTELEMETRY_VERSION=<otel-version> TAG=<tag> docker buildx bake 
 ```
 
 ## Release flow
