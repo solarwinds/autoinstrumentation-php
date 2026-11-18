@@ -25,7 +25,7 @@
     "open-telemetry/opentelemetry-auto-slim": "^1.4",
     "open-telemetry/opentelemetry-metrics-runtime": "^0.3",
     "open-telemetry/opentelemetry-sqlcommenter": "^0.3",
-    "solarwinds/apm": "^9.0@alpha",
+    "solarwinds/apm": "dev-suppress_otel_sdk",
     "php-http/guzzle7-adapter": "^1.0",
     "nyholm/psr7-server": "^1.1"
   },
