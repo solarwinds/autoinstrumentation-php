@@ -2,11 +2,11 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Build args declared before the first FROM are usable in FROM instructions.
-ARG PHP_IMAGE=php:8.2@sha256:118ef4fb1db5e866fb604f2f260da81f819a0a1eac87a4083f9194f48e00beee
+ARG PHP_IMAGE=php:8.2@sha256:9277667c0fc298de473509dfed37adf969c97a0372338de990491b39bacf99a5
 ARG OPENTELEMETRY_VERSION=1.5.0
 ARG APM_EXT_VERSION=3.0.0
-ARG PIE_VERSION=1.5.2
-ARG PIE_SHA256=fe70c59738cf56ec00a818cf9cb9593da171aac86f5f1f859995b8839dfd2cc7
+ARG PIE_VERSION=1.6.0
+ARG PIE_SHA256=81041b276f4e23dfdfa6dc941e5745f9adec824a1bcf6141e226181ef43f519e
 
 # Parameterized extension builder — driven by docker-bake.hcl.
 FROM ${PHP_IMAGE} AS builder
@@ -33,8 +33,8 @@ RUN if [ "${LIBC}" = "musl" ]; then \
     && pie install solarwinds/apm_ext:${APM_EXT_VERSION} \
     && cp /usr/local/lib/php/extensions/no-debug-${THREAD}-*/apm_ext.so .
 
-COPY --from=composer:2@sha256:af98f42dfff7c68ba8d53c2164fd9fde1087b7d449514baa38c418b1f6bc4bac /usr/bin/composer /usr/bin/composer
-COPY composer.json composer.json
+COPY --from=composer:2@sha256:0049ce90b432795bf413a738b073963ada1a689e1a8708104684baafe94586ec /usr/bin/composer /usr/bin/composer
+COPY composer.json .
 RUN composer install --ignore-platform-req='ext-*'
 RUN mv vendor/* . && rm -rf vendor composer.json composer.lock
 

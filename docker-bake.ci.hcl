@@ -21,5 +21,9 @@ target "final-ci" {
     build-zts-85          = "oci-layout://./artifacts/build-zts-85"
     build-non-zts-musl-85 = "oci-layout://./artifacts/build-non-zts-musl-85"
     build-zts-musl-85     = "oci-layout://./artifacts/build-zts-musl-85"
+    build-non-zts-86      = "oci-layout://./artifacts/build-non-zts-86"
+    build-zts-86          = "oci-layout://./artifacts/build-zts-86"
+    build-non-zts-musl-86 = "oci-layout://./artifacts/build-non-zts-musl-86"
+    build-zts-musl-86     = "oci-layout://./artifacts/build-zts-musl-86"
   }
 }
