@@ -57,6 +57,12 @@ variable "PHP_85_ZTS"          { default = "php:8.5-zts@sha256:9a358d8de4a52ea34
 variable "PHP_85_MUSL_NON_ZTS" { default = "php:8.5-alpine@sha256:93684051146ec037620855feb77f278090bde45ddc030801cd3f2a7685bc4deb" }
 variable "PHP_85_MUSL_ZTS"     { default = "php:8.5-zts-alpine@sha256:1c45229fd82d57ae54104a0930fb58c635bbfe81dc156971eeaf7993bc59db32" }
 
+# PHP 8.6
+variable "PHP_86_NON_ZTS"      { default = "php:8.6-nts@sha256:0b502ac17c9d274b746e843e1c7e84bef755cf1b5bf6cefb84e475f3e4be27d0" }
+variable "PHP_86_ZTS"          { default = "php:8.6@sha256:9bc69093cdff73d2dcf12bc34f4c308b8496a27dc3e6a4d0c332877289c6bf13" }
+variable "PHP_86_MUSL_NON_ZTS" { default = "php:8.6-nts-alpine@sha256:483e1f3bd03a7c10afe749527053e81ca668966606bdf7c1a7cc906dd20b5ca6" }
+variable "PHP_86_MUSL_ZTS"     { default = "php:8.6-alpine@sha256:19c9ad299d11db9b15a2198c1e5aa8345b1907f0ac48731f50cf024d2b64221e" }
+
 # ---------------------------------------------------------------------------
 # Shared platform configuration — keep build and final targets aligned.
 # ---------------------------------------------------------------------------
@@ -152,6 +158,24 @@ target "build-zts-musl-85" {
   args = { PHP_IMAGE = PHP_85_MUSL_ZTS, LIBC = "musl", THREAD = "zts" }
 }
 
+# PHP 8.6
+target "build-non-zts-86" {
+  inherits = ["_build-base"]
+  args = { PHP_IMAGE = PHP_86_NON_ZTS, LIBC = "glibc", THREAD = "non-zts" }
+}
+target "build-zts-86" {
+  inherits = ["_build-base"]
+  args = { PHP_IMAGE = PHP_86_ZTS, LIBC = "glibc", THREAD = "zts" }
+}
+target "build-non-zts-musl-86" {
+  inherits = ["_build-base"]
+  args = { PHP_IMAGE = PHP_86_MUSL_NON_ZTS, LIBC = "musl", THREAD = "non-zts" }
+}
+target "build-zts-musl-86" {
+  inherits = ["_build-base"]
+  args = { PHP_IMAGE = PHP_86_MUSL_ZTS, LIBC = "musl", THREAD = "zts" }
+}
+
 # ---------------------------------------------------------------------------
 # Final image — assembles all build artifacts into a single busybox image.
 # ---------------------------------------------------------------------------
@@ -177,6 +201,10 @@ target "final" {
     build-zts-85          = "target:build-zts-85"
     build-non-zts-musl-85 = "target:build-non-zts-musl-85"
     build-zts-musl-85     = "target:build-zts-musl-85"
+    build-non-zts-86      = "target:build-non-zts-86"
+    build-zts-86          = "target:build-zts-86"
+    build-non-zts-musl-86 = "target:build-non-zts-musl-86"
+    build-zts-musl-86     = "target:build-zts-musl-86"
   }
 }
 
